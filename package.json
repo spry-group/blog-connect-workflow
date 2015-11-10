@@ -1,0 +1,26 @@
+{
+  "name": "blog-connect-workflow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "connect": "^3.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spry-group/blog-connect-workflow.git"
+  },
+  "keywords": [
+    "connect"
+  ],
+  "author": "chachan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spry-group/blog-connect-workflow/issues"
+  },
+  "homepage": "https://github.com/spry-group/blog-connect-workflow#readme"
+}
