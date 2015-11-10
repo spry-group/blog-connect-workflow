@@ -5,15 +5,24 @@ var app = connect();
 
 /**
  * Error handler that shows the stacktrace on the terminal
- * @param  {Function} function error handler
+ * @param  {Error} err error object
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
  * @return {null}
  */
-function crashMiddleware(err, req, res, next) {
-    console.log('crashMiddleware');
-
+function crash(err, req, res, next) {
+    console.error('This error handler is actually being call');
     console.error(err.stack);
 };
 
+/**
+ * Handler able to replace the request url if original request points to '/bad'
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
+ * @return {null}
+ */
 function bigBrother(req, res, next) {
     console.log('big brother watches over you.');
     if (req.url == '/bad') {
@@ -23,62 +32,86 @@ function bigBrother(req, res, next) {
     next();
 };
 
-function badMiddleware(req, res, next) {
+/**
+ * Handler that prints a message in the console
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
+ * @return {null}
+ */
+function bad(req, res, next) {
     console.log('big brother has forbidden this path.');
 };
 
-function ungoodMiddleware(req, res, next){
+/**
+ * Handler that prints a message and responds another message
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
+ * @return {null}
+ */
+function ungood(req, res, next){
     console.log('double spoken like a double plus good citizen.');
     res.end('double plus ungood!');
 };
 
 
 /**
- * Mount handler that responses a message
- * @param  {string} '/hello' route
- * @param  {Function} function mount handler
+ * Handler that responses a message
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
  * @return {null}
  */
-function helloWorldMiddleware(req, res, next) {
+function helloWorld(req, res, next) {
     res.write('¡Hola mundo!\n');
     next();
 };
 
 /**
- * Mount handler that response a message and throws an error
- * @param  {string} '/good-bye' route
- * @param  {Function} function  mount handler
+ * Handler that response a message and throws an error
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
  * @return {null}
  */
-function goodByeWorldMiddleware(req, res, next) {
+function goodByeWorld(req, res, next) {
     res.end('¡Adios mundo cruel!\n');
     next(new Error('¡Cuidado con la bomba!'));
 };
 
-
+/**
+ * Handler that response a message
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
+ * @return {null}
+ */
 function zorroArrives(req, res, next) {
     console.log('El Zorro arrives on the scene and saves the day!');
     next();
 };
 
 /**
- * Mount handler that will catch all the requests and responses a message
- * @param  {Function} function mount handler
+ * Handler that will catch all the requests and responses a message
+ * @param {http.ClientRequest} req request object
+ * @param {http.ServerResponse} res response object
+ * @param {Function} next function that will call the next middleware in the stack
  * @return {null}
  */
-function signMiddleware(req, res, next) {
+function sign(req, res, next) {
     res.end('\n--\nEl Zorro.\n');
     next();
 };
 
 app.use(bigBrother);
-app.use('/bad', badMiddleware);
-app.use('/ungood', ungoodMiddleware);
-app.use('/hello', helloWorldMiddleware);
-app.use('/good-bye', goodByeWorldMiddleware);
+app.use('/bad', bad);
+app.use('/ungood', ungood);
+app.use('/hello', helloWorld);
+app.use('/good-bye', goodByeWorld);
 app.use(zorroArrives);
-app.use(signMiddleware);
-app.use(crashMiddleware);
+app.use(sign);
+app.use(crash);
 
 /**
  * Starts the application
