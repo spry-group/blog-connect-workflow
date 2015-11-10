@@ -14,6 +14,26 @@ app.use(function crashMiddleware(err, req, res, next) {
     console.error(err.stack);
 });
 
+app.use(function bigBrother(req, res, next) {
+    console.log('big brother watches over you.');
+    if (req.url == '/bad') {
+        console.log('and makes sure you use doublespeak')
+        req.url = '/ungood';
+    }
+    next();
+});
+
+
+app.use('/bad', function(req, res, next) {
+    console.log('big brother has forbidden this path.');
+});
+
+app.use('/ungood', function(req, res, next){
+    console.log('double spoken like a double plus good citizen.');
+    res.end('double plus ungood!');
+});
+
+
 /**
  * Mount handler that responses a message
  * @param  {string} '/hello' route
