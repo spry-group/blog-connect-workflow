@@ -8,30 +8,29 @@ var app = connect();
  * @param  {Function} function error handler
  * @return {null}
  */
-app.use(function crashMiddleware(err, req, res, next) {
+function crashMiddleware(err, req, res, next) {
     console.log('crashMiddleware');
 
     console.error(err.stack);
-});
+};
 
-app.use(function bigBrother(req, res, next) {
+function bigBrother(req, res, next) {
     console.log('big brother watches over you.');
     if (req.url == '/bad') {
         console.log('and makes sure you use doublespeak')
         req.url = '/ungood';
     }
     next();
-});
+};
 
-
-app.use('/bad', function(req, res, next) {
+function badMiddleware(req, res, next) {
     console.log('big brother has forbidden this path.');
-});
+};
 
-app.use('/ungood', function(req, res, next){
+function ungoodMiddleware(req, res, next){
     console.log('double spoken like a double plus good citizen.');
     res.end('double plus ungood!');
-});
+};
 
 
 /**
@@ -40,10 +39,10 @@ app.use('/ungood', function(req, res, next){
  * @param  {Function} function mount handler
  * @return {null}
  */
-app.use('/hello', function helloWorldMiddleware(req, res, next) {
+function helloWorldMiddleware(req, res, next) {
     res.write('¡Hola mundo!\n');
     next();
-});
+};
 
 /**
  * Mount handler that response a message and throws an error
@@ -51,24 +50,35 @@ app.use('/hello', function helloWorldMiddleware(req, res, next) {
  * @param  {Function} function  mount handler
  * @return {null}
  */
-app.use('/good-bye', function goodByeWorldMiddleware(req, res, next) {
+function goodByeWorldMiddleware(req, res, next) {
     res.end('¡Adios mundo cruel!\n');
     next(new Error('¡Cuidado con la bomba!'));
-});
+};
 
 
-app.use(function zorroArrives(req, res, next) {
+function zorroArrives(req, res, next) {
     console.log('El Zorro arrives on the scene and saves the day!');
-});
+    next();
+};
+
 /**
  * Mount handler that will catch all the requests and responses a message
  * @param  {Function} function mount handler
  * @return {null}
  */
-app.use(function signMiddleware(req, res, next) {
+function signMiddleware(req, res, next) {
     res.end('\n--\nEl Zorro.\n');
     next();
-});
+};
+
+app.use(bigBrother);
+app.use('/bad', badMiddleware);
+app.use('/ungood', ungoodMiddleware);
+app.use('/hello', helloWorldMiddleware);
+app.use('/good-bye', goodByeWorldMiddleware);
+app.use(zorroArrives);
+app.use(signMiddleware);
+app.use(crashMiddleware);
 
 /**
  * Starts the application
