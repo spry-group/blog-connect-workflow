@@ -56,6 +56,10 @@ app.use('/good-bye', function goodByeWorldMiddleware(req, res, next) {
     next(new Error('¡Cuidado con la bomba!'));
 });
 
+
+app.use(function zorroArrives(req, res, next) {
+    console.log('El Zorro arrives on the scene and saves the day!');
+});
 /**
  * Mount handler that will catch all the requests and responses a message
  * @param  {Function} function mount handler
