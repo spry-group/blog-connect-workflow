@@ -9,6 +9,8 @@ var app = connect();
  * @return {null}
  */
 app.use(function crashMiddleware(err, req, res, next) {
+    console.log('crashMiddleware');
+
     console.error(err.stack);
 });
 
